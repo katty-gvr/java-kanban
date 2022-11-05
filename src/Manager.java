@@ -36,6 +36,11 @@ public class Manager {
 
     public void deleteAllSubtasks() {
         subtasks.clear();
+        // вычисление статуса эпиков
+        ArrayList<Epic> epicsList = getListOfEpics();
+        for(Epic epic : epicsList) {
+            updateEpicStatus(epic);
+        }
     }
 
     // 2.3 Получение по идентификатору
@@ -77,6 +82,7 @@ public class Manager {
         subtask.setId(id);
         currentEpic.subtasksId.add(id);
         subtasks.put(id, subtask);
+        updateEpicStatus(currentEpic);
         return id;
     }
 
@@ -94,6 +100,7 @@ public class Manager {
     private void updateEpicStatus(Epic epic) {
         if (epic.subtasksId.isEmpty()) {
             epic.setStatus("NEW");
+            return;
         }
         ArrayList<String> statusOfSubtasksOfEpic = new ArrayList<>();
         ArrayList<Integer> subIDs = epic.getSubtasksId(); // вернули список с айди подзадач, входящих в эпик
@@ -153,15 +160,15 @@ public class Manager {
 
     // 3.1 получение списка всех подзадач определенного эпика
 
-    public ArrayList<String> getSubtasksOfEpic(Epic epic) {
-        ArrayList<String> nameOfSubtasksOfEpic = new ArrayList<>();
+    public ArrayList<Task> getSubtasksOfEpic(Epic epic) {
+        ArrayList<Task> subtasksOfEpic = new ArrayList<>();
         ArrayList<Integer> subIDs = epic.getSubtasksId();
         for(int i = 0; i < subIDs.size(); i++) {
             Integer subtaskId = subIDs.get(i);
             Subtask sub = getSubtask(subtaskId);
-            nameOfSubtasksOfEpic.add(sub.name);
+            subtasksOfEpic.add(sub);
             }
-        return nameOfSubtasksOfEpic;
+        return subtasksOfEpic;
         }
     }
 

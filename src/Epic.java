@@ -24,10 +24,6 @@ public class Epic extends Task {
         return subtasksId;
     }
 
-    public void setSubtasksId(ArrayList<Integer> subtasksId) {
-        this.subtasksId = subtasksId;
-    }
-
     @Override
     public String toString() {
         return "Epic{" +
