@@ -93,8 +93,10 @@ public class Manager {
     }
 
     public void updateEpic(Epic epic) {
-        updateEpicStatus(epic);
+        epic.setName(epic.name);
+        epic.setDescription(epic.description);
         epics.put(epic.getId(), epic);
+        updateEpicStatus(epic); // автоматический расчет статуса эпика на основании наличия или статуса его подзадач
     }
 
     private void updateEpicStatus(Epic epic) {
@@ -104,8 +106,7 @@ public class Manager {
         }
         ArrayList<String> statusOfSubtasksOfEpic = new ArrayList<>();
         ArrayList<Integer> subIDs = epic.getSubtasksId(); // вернули список с айди подзадач, входящих в эпик
-        for (int i = 0; i < subIDs.size(); i++) {
-            Integer subtaskId = subIDs.get(i);
+        for(Integer subtaskId : subIDs) {
             Subtask sub = getSubtask(subtaskId);
             statusOfSubtasksOfEpic.add(sub.status);
         }
@@ -134,7 +135,11 @@ public class Manager {
     public void updateSubtask(Subtask subtask) {
         subtasks.put(subtask.getId(), subtask);
         Epic epic = getEpic(subtask.getEpicId());
-        updateEpicStatus(epic);
+        if (epic != null) {
+            updateEpicStatus(epic);
+        } else {
+            System.out.println("Такого эпика не существует!");
+        }
     }
 
     // 2.5 Удаление объекта по индентификатору
@@ -145,7 +150,6 @@ public class Manager {
 
     public void deleteEpic(int id) {
         Epic epic = getEpic(id);
-        ArrayList<Subtask> subOfEpic = new ArrayList<>();
         ArrayList<Integer> subIds = epic.getSubtasksId();
       for(int i = 0; i < subIds.size(); i++) {
            Integer subtaskId = subIds.get(i);
@@ -162,9 +166,7 @@ public class Manager {
 
     public ArrayList<Task> getSubtasksOfEpic(Epic epic) {
         ArrayList<Task> subtasksOfEpic = new ArrayList<>();
-        ArrayList<Integer> subIDs = epic.getSubtasksId();
-        for(int i = 0; i < subIDs.size(); i++) {
-            Integer subtaskId = subIDs.get(i);
+        for(Integer subtaskId : epic.getSubtasksId()) {
             Subtask sub = getSubtask(subtaskId);
             subtasksOfEpic.add(sub);
             }

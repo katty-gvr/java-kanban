@@ -44,5 +44,16 @@ public class Main {
         System.out.println(manager.getListOfTasks());
         System.out.println(manager.getListOfSubtasks());
         System.out.println(manager.getListOfEpics());
+
+        epic1 = new Epic(3,"Обновление имени эпика 1", "Обновление описания эпика 1",
+                "IN PROGRESS"); // попытка обновления эпика с присвоением статуса IN PROGRESS
+        manager.updateEpic(epic1);
+        System.out.println(manager.getListOfEpics()); // при печати статус эпика = NEW, т.к. у него еще нет подзадач
+
+        // добавление подзадачи в обновленный эпик
+        Subtask subtask4 = new Subtask("Подзадача 4", "Описание 4", "NEW", 3);
+        manager.addNewSubtask(subtask4);
+        System.out.println(manager.getListOfEpics()); // статус эпика по прежнему NEW, т.к. у его подзадачи статус NEW
+
     }
 }
