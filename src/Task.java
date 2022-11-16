@@ -2,15 +2,16 @@ public class Task {
     protected int id;
     protected String name;
     protected String description;
-    protected String status;
+    protected Status status;
+   // protected String status;
 
-    public Task(String name, String description, String status) {
+    public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
-        this.status = status;
+       this.status = status;
     }
 
-    public Task(int id, String name, String description, String status) {
+    public Task(int id, String name, String description, Status status) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -24,8 +25,8 @@ public class Task {
         this.id = id;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus() {
+        //this.status = status;
     }
 
     @Override
