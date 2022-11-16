@@ -1,6 +1,7 @@
 package Managers.Impl;
 
 import Managers.HistoryManager;
+import Managers.Managers;
 import Managers.TaskManager;
 import Tasks.Epic;
 import Tasks.Status;
@@ -17,9 +18,7 @@ public class InMemoryTaskManager implements TaskManager {
     HashMap<Integer, Epic> epics = new HashMap<>();
     HashMap<Integer, Subtask> subtasks = new HashMap<>();
     int generatorId = 0;
-    //public List<Task> history = new ArrayList<>(); // список истории просмотров
-    HistoryManager historyManager = new InMemoryHistoryManager();
-
+    HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public List<Task> getHistory() {

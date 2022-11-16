@@ -58,7 +58,7 @@ public interface TaskManager {
 
     // 3.1 получение списка всех подзадач определенного эпика
 
-    ArrayList<Task> getSubtasksOfEpic(Epic epic);
+    List<Task> getSubtasksOfEpic(Epic epic);
 
 }
 

@@ -3,12 +3,12 @@ package Managers.Impl;
 import Managers.HistoryManager;
 import Tasks.Task;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    public List<Task> history = new ArrayList<>(); // список истории просмотров
+    public LinkedList<Task> history = new LinkedList<>(); // список истории просмотров
 
     @Override
     public void addTask(Task task) {
