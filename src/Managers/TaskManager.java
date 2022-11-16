@@ -1,14 +1,22 @@
+package Managers;
+
+import Tasks.Epic;
+import Tasks.Subtask;
+import Tasks.Task;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
 
+    // История просмотров
+    List<Task> getHistory();
+
     // 2.1. Получение списков всех типов задач
 
-    ArrayList<Task> getListOfTasks();
-    public ArrayList<Epic> getListOfEpics();
-    public ArrayList<Subtask> getListOfSubtasks();
+    List<Task> getListOfTasks();
+    List<Epic> getListOfEpics();
+    List<Subtask> getListOfSubtasks();
 
     // 2.2 Удаление списков всех типов задач
 

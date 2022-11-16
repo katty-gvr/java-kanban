@@ -1,10 +1,15 @@
-import java.security.spec.ECPoint;
-import java.util.ArrayList;
+import Managers.Impl.InMemoryTaskManager;
+import Managers.Managers;
+import Tasks.Epic;
+import Tasks.Status;
+import Tasks.Subtask;
+import Tasks.Task;
+import Managers.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+        TaskManager manager = Managers.getDefault();
 
         Task task1 = new Task("Задача 1", "Описание 1", Status.NEW);
         Task task2 = new Task("Задача 2", "Описание 2", Status.NEW);
@@ -33,7 +38,7 @@ public class Main {
         manager.getSubtask(5);
         manager.getTask(2);
 
-        System.out.println(manager.historyManager.getHistory());
+        System.out.println(manager.getHistory());
 
         task1 = new Task(1,"Задача 1", "Описание 1", Status.DONE);
         manager.updateTask(task1);
@@ -66,7 +71,7 @@ public class Main {
         manager.getSubtask(4);
         manager.getTask(2);
 
-        System.out.println(manager.historyManager.getHistory());
+        System.out.println(manager.getHistory());
 
     }
 }
