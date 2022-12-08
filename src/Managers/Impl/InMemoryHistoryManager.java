@@ -3,23 +3,80 @@ package Managers.Impl;
 import Managers.HistoryManager;
 import Tasks.Task;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    public LinkedList<Task> history = new LinkedList<>(); // список истории просмотров
+    public CustomLinkedList<Task> historyLinkedList = new CustomLinkedList<>();
+    private static Map<Integer, Node<Task>> mapForHistoryList = new HashMap<>();
 
     @Override
     public void addTask(Task task) {
-        history.add(task);
-        if (history.size() > 10) {
-            history.remove(0);
+        if (task != null) {
+            remove(task.getId());
         }
+        historyLinkedList.linkLast(task);
+    }
+
+    @Override
+    public void remove(int id) {
+        historyLinkedList.removeNode(mapForHistoryList.get(id));
     }
 
     @Override
     public List<Task> getHistory() {
-        return history;
+        return historyLinkedList.getTasks();
+    }
+
+    class CustomLinkedList<T> {
+
+        private Node<Task> head;
+        private Node<Task> tail;
+        private int size = 0;
+
+        private void linkLast(Task task) {
+            final Node<Task> oldTail = tail;
+            final Node<Task> newNode = new Node<Task>(oldTail, task, null);
+            tail = newNode;
+            mapForHistoryList.put(task.getId(), newNode);
+            if (oldTail == null)
+                head = newNode;
+            else
+                oldTail.next = newNode;
+        }
+
+        private List<Task> getTasks() {
+            List<Task> historyOfTasks = new ArrayList<>();
+            Node<Task> currentNode = head;
+            while (currentNode != null) {
+                historyOfTasks.add(currentNode.data);
+                currentNode = currentNode.next;
+            }
+            return historyOfTasks;
+        }
+
+        private void removeNode(Node<Task> node) {
+            if (node != null) {
+                final Node<Task> next = node.next;
+                final Node<Task> prev = node.prev;
+                node.data = null;
+
+                if (head == node && tail == node) {
+                    head = null;
+                    tail = null;
+                } else if (head == node && (tail != node)) {
+                    head = next;
+                    head.prev = null;
+                } else if ((head != node) && tail == node) {
+                    tail = prev;
+                    tail.next = null;
+                } else {
+                    prev.next = next;
+                    next.prev = prev;
+                }
+
+            }
+        }
     }
 }
+

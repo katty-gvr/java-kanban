@@ -192,6 +192,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int id) {
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -201,13 +202,16 @@ public class InMemoryTaskManager implements TaskManager {
         for(int i = 0; i < subIds.size(); i++) {
             Integer subtaskId = subIds.get(i);
             subtasks.remove(subtaskId);
+            historyManager.remove(subtaskId);
         }
         epics.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
     public void deleteSubtask(int id) {
         subtasks.remove(id);
+        historyManager.remove(id);
     }
 
     // 3.1 получение списка всех подзадач определенного эпика
@@ -221,6 +225,5 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return subtasksOfEpic;
     }
-
 }
 
