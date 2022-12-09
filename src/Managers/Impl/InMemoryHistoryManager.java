@@ -8,19 +8,19 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
     public CustomLinkedList<Task> historyLinkedList = new CustomLinkedList<>();
-    private static Map<Integer, Node<Task>> mapForHistoryList = new HashMap<>();
+    private Map<Integer, Node<Task>> mapForHistoryList = new HashMap<>();
 
     @Override
     public void addTask(Task task) {
         if (task != null) {
             remove(task.getId());
+            historyLinkedList.linkLast(task);
         }
-        historyLinkedList.linkLast(task);
     }
 
     @Override
     public void remove(int id) {
-        historyLinkedList.removeNode(mapForHistoryList.get(id));
+        historyLinkedList.removeNode(mapForHistoryList.remove(id)); // удаление записи из списка и из мапы
     }
 
     @Override
@@ -29,10 +29,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     class CustomLinkedList<T> {
-
         private Node<Task> head;
         private Node<Task> tail;
-        private int size = 0;
 
         private void linkLast(Task task) {
             final Node<Task> oldTail = tail;
@@ -64,17 +62,16 @@ public class InMemoryHistoryManager implements HistoryManager {
                 if (head == node && tail == node) {
                     head = null;
                     tail = null;
-                } else if (head == node && (tail != node)) {
+                } else if (head == node) {
                     head = next;
                     head.prev = null;
-                } else if ((head != node) && tail == node) {
+                } else if (tail == node) {
                     tail = prev;
                     tail.next = null;
                 } else {
                     prev.next = next;
                     next.prev = prev;
                 }
-
             }
         }
     }
