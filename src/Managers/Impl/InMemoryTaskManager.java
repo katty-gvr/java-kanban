@@ -8,6 +8,7 @@ import Tasks.Status;
 import Tasks.Subtask;
 import Tasks.Task;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,17 +28,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     // 2.1. Получение списков всех типов задач
     @Override
-    public ArrayList<Task> getListOfTasks() {
+    public List<Task> getListOfTasks() {
         ArrayList<Task> tasksList = new ArrayList<>(tasks.values());
         return tasksList;
     }
     @Override
-    public ArrayList<Epic> getListOfEpics() {
+    public List<Epic> getListOfEpics() {
         ArrayList<Epic> epicsList = new ArrayList<>(epics.values());
         return epicsList;
     }
     @Override
-    public ArrayList<Subtask> getListOfSubtasks() {
+    public List<Subtask> getListOfSubtasks() {
         // subtasks.put(1, subtask1);
         ArrayList<Subtask> subtasksList = new ArrayList<>(subtasks.values());
         return subtasksList;
@@ -58,7 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllSubtasks() {
         subtasks.clear();
         // вычисление статуса эпиков
-        ArrayList<Epic> epicsList = getListOfEpics();
+        List<Epic> epicsList = getListOfEpics();
         for(Epic epic : epicsList) {
             updateEpicStatus(epic);
         }
@@ -85,7 +86,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask getSubtask(int id) {
+    public Subtask getSubtask(int id)  {
         Subtask subtask = subtasks.get(id);
         historyManager.addTask(subtask);
         return subtask;
@@ -223,6 +224,18 @@ public class InMemoryTaskManager implements TaskManager {
             subtasksOfEpic.add(sub);
         }
         return subtasksOfEpic;
+    }
+
+    public HashMap<Integer, Task> getTasks() {
+        return tasks;
+    }
+
+    public HashMap<Integer, Epic> getEpics() {
+        return epics;
+    }
+
+    public HashMap<Integer, Subtask> getSubtasks() {
+        return subtasks;
     }
 }
 
