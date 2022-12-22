@@ -1,11 +1,9 @@
-package Managers;
+package managers;
 
-import Tasks.Epic;
-import Tasks.Subtask;
-import Tasks.Task;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
@@ -16,7 +14,9 @@ public interface TaskManager {
     // 2.1. Получение списков всех типов задач
 
     List<Task> getListOfTasks();
+
     List<Epic> getListOfEpics();
+
     List<Subtask> getListOfSubtasks();
 
     // 2.2 Удаление списков всех типов задач
@@ -30,7 +30,9 @@ public interface TaskManager {
     // 2.3 Получение по идентификатору
 
     Task getTask(int id);
+
     Epic getEpic(int id);
+
     Subtask getSubtask(int id);
 
     // 2.4 Создание - передача объекта в качестве параметра
