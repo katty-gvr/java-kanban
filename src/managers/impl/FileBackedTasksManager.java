@@ -12,7 +12,6 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
     private final File file;
-    int maxId  = 0;
 
     public FileBackedTasksManager(File file) {
         this.file = file;
@@ -66,10 +65,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         } else {
             tasks.put(currentTask.getId(), currentTask);
         }
-        if(currentTask.getId() > maxId) {
-            maxId = currentTask.getId();
+        if(currentTask.getId() > generatorId) {
+            generatorId = currentTask.getId();
         }
-        generatorId = maxId;
     }
 
     void save() {
