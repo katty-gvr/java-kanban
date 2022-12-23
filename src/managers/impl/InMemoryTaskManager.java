@@ -17,21 +17,8 @@ public class InMemoryTaskManager implements TaskManager {
     HashMap<Integer, Task> tasks = new HashMap<>();
     HashMap<Integer, Epic> epics = new HashMap<>();
     HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    List<Integer> allTaskIds = new ArrayList<>();
     HistoryManager historyManager = Managers.getDefaultHistory();
-
-    public int generateId() {
-        int maxId = 0;
-        if (allTaskIds.isEmpty()) {
-            return 1;
-        }
-        for (Integer id : allTaskIds ) {
-            if (id > maxId) {
-                maxId = id;
-            }
-        }
-        return ++maxId;
-    }
+    int generatorId = 0;
 
     @Override
     public List<Task> getHistory() {
@@ -108,18 +95,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addNewTask(Task task) {
-        int id = generateId();
+        int id = ++generatorId;
         task.setId(id);
-        allTaskIds.add(id);
+        //allTaskIds.add(id);
         tasks.put(id, task);
         return id;
     }
 
     @Override
     public int addNewEpic(Epic epic) {
-        int id = generateId();
+        int id = ++generatorId;
         epic.setId(id);
-        allTaskIds.add(id);
+       // allTaskIds.add(id);
         epics.put(id, epic);
         return id;
     }
@@ -131,10 +118,10 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Такого эпика не существует!" + subtask.getEpicId());
             return -1;
         }
-        Integer id = generateId();
+        Integer id = ++generatorId;
         subtask.setId(id);
         currentEpic.getSubtaskIds().add(id);
-        allTaskIds.add(id);
+        //allTaskIds.add(id);
         subtasks.put(id, subtask);
         updateEpicStatus(currentEpic);
         return id;
@@ -220,6 +207,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtask(int id) {
+        Epic epic = getEpic(subtasks.get(id).getEpicId());
+        epic.getSubtaskIds().remove(id);
+        updateEpic(epic);
         subtasks.remove(id);
         historyManager.remove(id);
     }

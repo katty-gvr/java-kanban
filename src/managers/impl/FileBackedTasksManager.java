@@ -12,6 +12,7 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
     private final File file;
+    int maxId  = 0;
 
     public FileBackedTasksManager(File file) {
         this.file = file;
@@ -21,18 +22,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            List<String> dataFile = new ArrayList<>();
+            br.readLine();
             while (br.ready()) {
-                dataFile.add(br.readLine());
-            }
-            for (int i = 1; i < dataFile.size() ; i++) {
-                if (dataFile.get(i).isEmpty()) {
-                    List<Integer> history = historyFromString(dataFile.get(i + 1));
+                String line = br.readLine();
+                if (line.isEmpty()) {
+                    List<Integer> history = historyFromString(br.readLine());
                     fileManager.readHistory(history);
                     break;
+                } else {
+                    Task currentTask = fromString(line);
+                    fileManager.readTasks(currentTask);
                 }
-                Task currentTask = fromString(dataFile.get(i));
-                fileManager.readTasks(currentTask);
             }
         }
         catch (IOException exception) {
@@ -40,6 +40,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
         return fileManager;
     }
+
     private void readHistory(List<Integer> history) {
         for (int i = 0; i < history.size(); i++) {
             Integer currentId = history.get(i);
@@ -52,24 +53,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             }
         }
     }
+
     private <T extends Task> void readTasks(Task currentTask) {
         if (currentTask instanceof Epic) {
             epics.put(currentTask.getId(), (Epic) currentTask);
-            allTaskIds.add(currentTask.getId());
         } else if (currentTask instanceof Subtask) {
             int epicId = ((Subtask) currentTask).getEpicId();
             Epic epic = getEpicForFileLoad(epicId);
             epic.addSubtaskId(currentTask.getId());
             epics.put(epicId, epic);
-            if (!allTaskIds.contains(epicId)) {
-                allTaskIds.add(epicId);
-            }
             subtasks.put(currentTask.getId(), (Subtask) currentTask);
-            allTaskIds.add(currentTask.getId());
         } else {
             tasks.put(currentTask.getId(), currentTask);
-            allTaskIds.add(currentTask.getId());
         }
+        if(currentTask.getId() > maxId) {
+            maxId = currentTask.getId();
+        }
+        generatorId = maxId;
     }
 
     void save() {
@@ -147,11 +147,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             tasksIds.add(Integer.valueOf(idString));
         }
         return tasksIds;
-    }
-
-   @Override
-    public int generateId() {
-        return super.generateId();
     }
 
     @Override
