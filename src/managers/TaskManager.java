@@ -5,10 +5,16 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
-    // История просмотров
+    List<Task> getPrioritizedTask();
+
+    void validateTaskPriority(Task task);
+
+    public boolean isIntersected(Task task);
+
     List<Task> getHistory();
 
     // 2.1. Получение списков всех типов задач
@@ -61,7 +67,7 @@ public interface TaskManager {
 
     // 3.1 получение списка всех подзадач определенного эпика
 
-    List<Task> getSubtasksOfEpic(Epic epic);
+    List<Subtask> getSubtasksOfEpic(Epic epic);
 
 }
 
