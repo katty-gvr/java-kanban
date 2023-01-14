@@ -11,10 +11,6 @@ public interface TaskManager {
 
     List<Task> getPrioritizedTask();
 
-    void validateTaskPriority(Task task);
-
-    public boolean isIntersected(Task task);
-
     List<Task> getHistory();
 
     // 2.1. Получение списков всех типов задач

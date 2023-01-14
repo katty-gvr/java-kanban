@@ -61,7 +61,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         } else if (currentTask instanceof Subtask) {
             int epicId = ((Subtask) currentTask).getEpicId();
             Epic epic = getEpicForFileLoad(epicId);
-            epic.addSubtaskToEpic((Subtask) currentTask);
+            //epic.addSubtaskToEpic((Subtask) currentTask);
+            epic.addSubtaskId(currentTask.getId());
             epics.put(epicId, epic);
             subtasks.put(currentTask.getId(), (Subtask) currentTask);
         } else {
