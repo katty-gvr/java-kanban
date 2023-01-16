@@ -32,10 +32,13 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<InMemoryTaskManag
         taskManager.addNewEpic(epic);
         taskManager.getTask(task.getId());
 
-        FileBackedTasksManager.loadFromFile(file);
-
         assertEquals(List.of(task), taskManager.getListOfTasks());
         assertEquals(List.of(epic), taskManager.getListOfEpics());
+
+        FileBackedTasksManager restored = FileBackedTasksManager.loadFromFile(file);
+        assertEquals(restored.getListOfTasks(), taskManager.getListOfTasks());
+        assertEquals(restored.getListOfEpics(), taskManager.getListOfEpics());
+        assertEquals(restored.getPrioritizedTask(), taskManager.getPrioritizedTask());
     }
 
     @Test

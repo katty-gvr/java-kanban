@@ -61,12 +61,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         } else if (currentTask instanceof Subtask) {
             int epicId = ((Subtask) currentTask).getEpicId();
             Epic epic = getEpicForFileLoad(epicId);
-            //epic.addSubtaskToEpic((Subtask) currentTask);
             epic.addSubtaskId(currentTask.getId());
             epics.put(epicId, epic);
             subtasks.put(currentTask.getId(), (Subtask) currentTask);
+            checkTaskTime(currentTask);
         } else {
             tasks.put(currentTask.getId(), currentTask);
+            checkTaskTime(currentTask);
         }
         if(currentTask.getId() > generatorId) {
             generatorId = currentTask.getId();
@@ -284,13 +285,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         save();
     }
 
-    @Override
-    public List<Task> getPrioritizedTask() {
-        List<Task> tasksPriority = new ArrayList<>(prioritizedTasks);
-        tasksPriority.addAll(tasksWithoutStartTime);
-        return tasksPriority;
-    }
-
 
     public static void main(String[] args) {
         FileBackedTasksManager manager = new FileBackedTasksManager(new File("data/data.csv"));
@@ -324,14 +318,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 LocalDateTime.of(2023, 1,30,12,30));
         Task task5 = new Task("Задача 5", "Описание 5", Status.NEW, 30,
                 LocalDateTime.of(2023, 1,30,12,40));
-        manager.addNewTask(task4);
+       // manager.addNewTask(task4); - при попытке добавления задачи выбрасывается сгенерированное исключение
         manager.addNewTask(task5);
+        task4 = new Task(9,"UPD-2 Задача 4", "Описание 4-2", Status.NEW, 30,
+                LocalDateTime.of(2023, 1,30,13,30));
+        manager.updateTask(task4); // проверка обновления задачи, в prioritizedTasks записывается новая версия
+
+        subtask3 = new Subtask(6,"Подзадача 3 эпика 1", "Описание 3", Status.DONE, 60,
+                LocalDateTime.of(2023, 3, 1, 15, 00), 3);
+        manager.updateSubtask(subtask3); // проверка обновления подзадачи, в prioritizedTasks записывается новая версия
 
         manager.getTask(1);
         manager.getEpic(7);
         manager.getSubtask(4);
         manager.getEpic(3);
-
 
         System.out.println(manager.getPrioritizedTask());
 

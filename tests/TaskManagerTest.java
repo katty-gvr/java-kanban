@@ -248,7 +248,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addNewEpic(epic);
         Subtask subtask = createSubtask(epic);
         taskManager.addNewSubtask(subtask);
-        Subtask subtask1 = new Subtask(subtask.getId(),"Подзадача 1 эпика 1", "Описание 1", Status.NEW,
+        Subtask subtask1 = new Subtask(subtask.getId(),"UPD Подзадача 1 эпика 1", "Описание 1", Status.NEW,
                 60, LocalDateTime.of(2023, 9, 1, 15, 00), epic.getId());
         taskManager.updateSubtask(subtask1);
 
@@ -259,11 +259,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void shouldUpdateEpic() {
         Epic epic = createEpic();
         taskManager.addNewEpic(epic);
-        Epic epic1 = new Epic(epic.getId(),"Обновление имени", "Обновление описания",
+        Subtask subtask = createSubtask(epic);
+        taskManager.addNewSubtask(subtask);
+        epic = new Epic(epic.getId(),"Обновление имени", "Обновление описания",
                 Status.DONE);
-        taskManager.updateEpic(epic1);
+        taskManager.updateEpic(epic);
 
-        assertNotEquals(epic, taskManager.getListOfEpics().get(0));
+        assertEquals(epic, taskManager.getListOfEpics().get(0));
     }
 
     @Test
