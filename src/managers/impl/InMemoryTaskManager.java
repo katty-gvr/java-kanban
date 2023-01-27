@@ -36,7 +36,7 @@ public class InMemoryTaskManager implements TaskManager {
         checkTaskTime(task);
     }
 
-    public void checkTaskTime(Task task) {
+    protected void checkTaskTime(Task task) {
         if (task.getStartTime() == null && task.getEndTime() == null) {
             tasksWithoutStartTime.add(task);
         } else {

@@ -36,8 +36,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                     fileManager.readTasks(currentTask);
                 }
             }
-        }
-        catch (IOException exception) {
+        } catch (IOException exception) {
             throw new ManagerLoadException("Ошибка чтения файла.");
         }
         return fileManager;
@@ -69,13 +68,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             tasks.put(currentTask.getId(), currentTask);
             checkTaskTime(currentTask);
         }
-        if(currentTask.getId() > generatorId) {
+        if (currentTask.getId() > generatorId) {
             generatorId = currentTask.getId();
         }
     }
 
     void save() {
-        try(Writer writer = new FileWriter(file)) {
+        try (Writer writer = new FileWriter(file)) {
             writer.write("id,type,name,status,description,duration,startTime,endTime,epic\n");
             writeTasks(getListOfTasks(), writer);
             writeTasks(getListOfEpics(), writer);
@@ -88,7 +87,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     private <T extends Task> void writeTasks(List<T> tasks, Writer writer) throws IOException {
-        for(Task task : tasks) {
+        for (Task task : tasks) {
             writer.write(toCsvString(task) + "\n");
         }
     }
@@ -125,9 +124,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         long duration = Long.parseLong(taskData[5]);
         LocalDateTime startTime;
         if (Objects.equals(taskData[6], "null")) {
-             startTime = null;
+            startTime = null;
         } else {
-             startTime = LocalDateTime.parse(taskData[6]);
+            startTime = LocalDateTime.parse(taskData[6]);
         }
 
         switch (tasksType) {
@@ -143,8 +142,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
     }
 
-     private String historyToString(HistoryManager manager) {
-        List<String> taskIds  = new ArrayList<>();
+    private String historyToString(HistoryManager manager) {
+        List<String> taskIds = new ArrayList<>();
 
         for (Task task : manager.getHistory()) {
             taskIds.add(String.valueOf(task.getId()));
@@ -165,7 +164,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             return tasksIds;
         }
     }
-
 
     @Override
     public List<Task> getHistory() {
@@ -213,17 +211,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return subtask;
     }
 
-    private void getTaskForFileLoad (int id) {
+    private void getTaskForFileLoad(int id) {
         Task task = tasks.get(id);
         historyManager.addTask(task);
     }
 
-    private Epic getEpicForFileLoad (int id) {
+    private Epic getEpicForFileLoad(int id) {
         Epic epic = epics.get(id);
         historyManager.addTask(epic);
         return epic;
     }
-    private void getSubtaskForFileLoad (int id) {
+
+    private void getSubtaskForFileLoad(int id) {
         Subtask subtask = subtasks.get(id);
         historyManager.addTask(subtask);
     }
@@ -283,59 +282,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public void deleteSubtask(int id) {
         super.deleteSubtask(id);
         save();
-    }
-
-
-    public static void main(String[] args) {
-        FileBackedTasksManager manager = new FileBackedTasksManager(new File("data/data.csv"));
-        Task task1 = new Task("Задача 1", "Описание 1", Status.NEW, 60,
-                LocalDateTime.of(2024, 2, 1, 15, 00));
-        Task task2 = new Task("Задача 2", "Описание 2", Status.NEW,60,
-                LocalDateTime.of(2023, 2, 1, 15, 00));
-        manager.addNewTask(task1); // id 1
-        manager.addNewTask(task2); // id 2
-
-        Epic epic1 = new Epic("Эпик 1 с тремя подзадачами", "Эпик 1", Status.NEW);
-        manager.addNewEpic(epic1); // id 3
-        Subtask subtask1 = new Subtask("Подзадача 1 эпика 1", "Описание 1", Status.NEW, 60,
-                LocalDateTime.of(2023, 9, 1, 15, 00), 3);
-        Subtask subtask2 = new Subtask("Подзадача 2 эпика 1", "Описание 2", Status.NEW, 60,
-                LocalDateTime.of(2023, 7, 1, 15, 00), 3);
-        Subtask subtask3 = new Subtask("Подзадача 3 эпика 1", "Описание 3", Status.NEW, 60,
-                LocalDateTime.of(2023, 3, 1, 15, 00), 3);
-
-        manager.addNewSubtask(subtask1); // id 4
-        manager.addNewSubtask(subtask2); // id 5
-        manager.addNewSubtask(subtask3); // id 6
-
-        Epic epic2 = new Epic("Эпик 2 без подзадач", "Эпик 2", Status.NEW);
-        manager.addNewEpic(epic2); // id 7
-        Task task3 = new Task("Задача без времени", "Описание", Status.NEW);
-        manager.addNewTask(task3);
-
-        // Проверка вывода сообщения о пересечении задач
-        Task task4 = new Task("Задача 4", "Описание 4", Status.NEW, 30,
-                LocalDateTime.of(2023, 1,30,12,30));
-        Task task5 = new Task("Задача 5", "Описание 5", Status.NEW, 30,
-                LocalDateTime.of(2023, 1,30,12,40));
-       // manager.addNewTask(task4); - при попытке добавления задачи выбрасывается сгенерированное исключение
-        manager.addNewTask(task5);
-        task4 = new Task(9,"UPD-2 Задача 4", "Описание 4-2", Status.NEW, 30,
-                LocalDateTime.of(2023, 1,30,13,30));
-        manager.updateTask(task4); // проверка обновления задачи, в prioritizedTasks записывается новая версия
-
-        subtask3 = new Subtask(6,"Подзадача 3 эпика 1", "Описание 3", Status.DONE, 60,
-                LocalDateTime.of(2023, 3, 1, 15, 00), 3);
-        manager.updateSubtask(subtask3); // проверка обновления подзадачи, в prioritizedTasks записывается новая версия
-
-        manager.getTask(1);
-        manager.getEpic(7);
-        manager.getSubtask(4);
-        manager.getEpic(3);
-
-        System.out.println(manager.getPrioritizedTask());
-
-        FileBackedTasksManager manager2 = loadFromFile(new File("data/data.csv"));
-
     }
 }
