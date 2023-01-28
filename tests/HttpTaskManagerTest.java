@@ -63,8 +63,10 @@ public class HttpTaskManagerTest {
 
     @Test
     public void shouldCorrectlyLoadSubtasks() throws IOException, InterruptedException {
+        Epic epic = new Epic("Description", "Title", Status.NEW);
+        taskManager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Подзадача 1 эпика 1", "Описание 1", Status.NEW, 60,
-                LocalDateTime.of(2023, 9, 1, 15, 00), 1);
+                LocalDateTime.of(2023, 9, 1, 15, 00), epic.getId());
         taskManager.addNewSubtask(subtask1);
 
         HttpTaskManager restored = new HttpTaskManager("http://localhost:8078");

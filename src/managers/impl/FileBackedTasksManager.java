@@ -42,7 +42,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return fileManager;
     }
 
-    private void readHistory(List<Integer> history) {
+    protected void readHistory(List<Integer> history) {
         for (Integer currentId : history) {
             if (epics.containsKey(currentId)) {
                 getEpicForFileLoad(currentId);
@@ -54,7 +54,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
     }
 
-    private <T extends Task> void readTasks(Task currentTask) {
+    protected  <T extends Task> void readTasks(Task currentTask) {
         if (currentTask instanceof Epic) {
             epics.put(currentTask.getId(), (Epic) currentTask);
         } else if (currentTask instanceof Subtask) {

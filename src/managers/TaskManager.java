@@ -5,9 +5,16 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TaskManager {
+
+    static int extractId(String query) {
+        try {
+            return Integer.parseInt(query.substring(query.indexOf("id=") + 3));
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 
     List<Task> getPrioritizedTask();
 

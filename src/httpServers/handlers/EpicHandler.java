@@ -34,7 +34,7 @@ public class EpicHandler implements HttpHandler {
                     response = gson.toJson(taskManager.getListOfEpics());
                 } else {
                     try {
-                        int epicId = Integer.parseInt(query.substring(query.indexOf("id=") + 3));
+                        int epicId = TaskManager.extractId(query);
                         Epic epic = taskManager.getEpic(epicId);
                         if(epic != null) {
                             response = gson.toJson(epic);
@@ -76,7 +76,7 @@ public class EpicHandler implements HttpHandler {
                     response = "Все эпики были успешно удалены.";
                 } else {
                     try {
-                        int epicId = Integer.parseInt(query.substring(query.indexOf("id=") + 3));
+                        int epicId = TaskManager.extractId(query);
                         taskManager.deleteEpic(epicId);
                         statusCode = 200;
                         response = "Эпик с id " + epicId + " был успешно удален.";

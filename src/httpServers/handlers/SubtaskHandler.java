@@ -34,7 +34,7 @@ public class SubtaskHandler implements HttpHandler {
                     response = gson.toJson(taskManager.getListOfSubtasks());
                 } else {
                     try {
-                        int subtaskId = Integer.parseInt(query.substring(query.indexOf("id=") + 3));
+                        int subtaskId = TaskManager.extractId(query);
                         Subtask subtask = taskManager.getSubtask(subtaskId);
                         if(subtask != null) {
                             response = gson.toJson(subtask);
@@ -76,7 +76,7 @@ public class SubtaskHandler implements HttpHandler {
                     response = "Все подзадачи были успешно удалены.";
                 } else {
                     try {
-                        int subtaskId = Integer.parseInt(query.substring(query.indexOf("id=") + 3));
+                        int subtaskId = TaskManager.extractId(query);
                         taskManager.deleteTask(subtaskId);
                         statusCode = 200;
                         response = "Удалена подзадача с id=" + subtaskId;

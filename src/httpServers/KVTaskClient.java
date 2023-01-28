@@ -1,5 +1,8 @@
 package httpServers;
 
+import exceptions.ManagerLoadException;
+import exceptions.ManagerSaveException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -42,13 +45,14 @@ public class KVTaskClient {
         HttpClient client = HttpClient.newHttpClient();
         try {
             HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)
-            );
-            if (response.statusCode() != 200) {
+                    HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            if(response.statusCode() != 200) {
                 System.out.println("Не удалось сохранить данные");
+                throw new ManagerSaveException("Ошибка записи данных на сервер");
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            throw new ManagerSaveException("Ошибка записи данных на сервер");
         }
     }
 
@@ -64,12 +68,14 @@ public class KVTaskClient {
         HttpClient client = HttpClient.newHttpClient();
         try {
             HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)
-            );
+                    HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+            if(response.statusCode() != 200) {
+                throw new ManagerLoadException("Ошибка загрузки данных.");
+            }
             return response.body();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            return "Во время запроса произошла ошибка";
+            throw new ManagerLoadException("Ошибка загрузки данных");
         }
     }
 }

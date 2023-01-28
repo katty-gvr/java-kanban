@@ -1,7 +1,7 @@
 import com.google.gson.Gson;
 import httpServers.HttpTaskServer;
-import managers.Managers;
 import managers.TaskManager;
+import managers.impl.InMemoryTaskManager;
 import org.junit.jupiter.api.*;
 import tasks.Status;
 import tasks.Task;
@@ -26,7 +26,7 @@ public class HttpTaskServerTest { //перед запуском тестов с�
 
     @BeforeAll
     static void init() throws IOException, InterruptedException {
-        taskManager = Managers.getDefault();
+        taskManager = new InMemoryTaskManager();
         taskServer = new HttpTaskServer(taskManager);
         taskServer.start();
     }

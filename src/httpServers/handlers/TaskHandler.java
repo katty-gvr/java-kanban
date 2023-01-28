@@ -39,7 +39,7 @@ public class TaskHandler implements HttpHandler {
                     response = gson.toJson(jsonString);
                 } else {
                     try {
-                        int taskId = Integer.parseInt(query.substring(query.indexOf("id=") + 3));
+                        int taskId = TaskManager.extractId(query);
                         Task task = taskManager.getTask(taskId);
                         if (task != null) {
                             response = gson.toJson(task);
@@ -86,7 +86,7 @@ public class TaskHandler implements HttpHandler {
                     response = "Все задачи были успешно удалены.";
                 } else {
                     try {
-                        int taskId = Integer.parseInt(query.substring(query.indexOf("id=") + 3));
+                        int taskId = TaskManager.extractId(query);
                         taskManager.deleteTask(taskId);
                         statusCode = 200;
                         response = "Удалена задача с id=" + taskId;

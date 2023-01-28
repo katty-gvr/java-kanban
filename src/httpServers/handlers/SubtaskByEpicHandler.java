@@ -29,7 +29,7 @@ public class SubtaskByEpicHandler implements HttpHandler {
         if ("GET".equals(method)) {
             String query = httpExchange.getRequestURI().getQuery();
             try {
-                int id = Integer.parseInt(query.substring(query.indexOf("id=") + 3));
+                int id = TaskManager.extractId(query);
                 Epic epic = taskManager.getEpic(id);
                 if (epic != null) {
 

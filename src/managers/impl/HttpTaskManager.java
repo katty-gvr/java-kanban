@@ -10,6 +10,8 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HttpTaskManager extends FileBackedTasksManager {
     final KVTaskClient client;
@@ -25,7 +27,11 @@ public class HttpTaskManager extends FileBackedTasksManager {
         client.put("tasks", gson.toJson(tasks.values()));
         client.put("subtasks", gson.toJson(subtasks.values()));
         client.put("epics", gson.toJson(epics.values()));
-        client.put("history", historyManager.getHistory().toString());
+        List<Integer> historyIds = new ArrayList<>();
+        for(Task task : historyManager.getHistory()) {
+            historyIds.add(task.getId());
+        }
+        client.put("history", gson.toJson(historyIds));
     }
 
     public void loadFromServer() {
@@ -34,7 +40,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
             JsonArray jsonTasksArray = jsonTasks.getAsJsonArray();
             for (JsonElement jsonTask : jsonTasksArray) {
                 Task task = gson.fromJson(jsonTask, Task.class);
-                addNewTask(task);
+                readTasks(task);
             }
         }
         JsonElement jsonEpics = JsonParser.parseString(client.load("epics"));
@@ -42,7 +48,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
             JsonArray jsonEpicsArray = jsonEpics.getAsJsonArray();
             for (JsonElement jsonEpic : jsonEpicsArray) {
                 Epic epic = gson.fromJson(jsonEpic, Epic.class);
-                addNewEpic(epic);
+                readTasks(epic);
             }
         }
         JsonElement jsonSubtasks = JsonParser.parseString(client.load("subtasks"));
@@ -50,23 +56,20 @@ public class HttpTaskManager extends FileBackedTasksManager {
             JsonArray jsonSubtasksArray = jsonSubtasks.getAsJsonArray();
             for (JsonElement jsonSubtask : jsonSubtasksArray) {
                 Subtask subtask = gson.fromJson(jsonSubtask, Subtask.class);
-                this.addNewSubtask(subtask);
+                readTasks(subtask);
             }
         }
         JsonElement jsonHistoryList = JsonParser.parseString(client.load("history"));
+        List<Integer> historyIds = new ArrayList<>();
         if (!jsonHistoryList.isJsonNull()) {
-            JsonArray jsonHistoryArray = jsonHistoryList.getAsJsonArray();
+            JsonArray jsonHistoryArray = jsonHistoryList.getAsJsonArray(); //получиили массив
             for (JsonElement jsonTaskId : jsonHistoryArray) {
                 int taskId = jsonTaskId.getAsInt();
-                if (this.subtasks.containsKey(taskId)) {
-                    this.getSubtask(taskId);
-                } else if (this.epics.containsKey(taskId)) {
-                    this.getEpic(taskId);
-                } else if (this.tasks.containsKey(taskId)) {
-                    this.getTask(taskId);
-                }
+                historyIds.add(taskId);
             }
+            readHistory(historyIds);
         }
     }
 }
+
 
